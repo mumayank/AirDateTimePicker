@@ -191,7 +191,7 @@ class AirDateTimePicker {
                         val cal = Calendar.getInstance()
                         cal.time = Date(minDate)
                         val minYear = cal.get(Calendar.YEAR)
-                        val minMonth = cal.get(Calendar.MONTH)
+                        val minMonth = cal.get(Calendar.MONTH) + 1
                         val minDay = cal.get(Calendar.DAY_OF_MONTH)
                         if (minYear == year && minMonth == month && minDay == dayOfMonth) {
                             isMinDateSame = true
@@ -203,7 +203,7 @@ class AirDateTimePicker {
                         val cal = Calendar.getInstance()
                         cal.time = Date(maxDate)
                         val maxYear = cal.get(Calendar.YEAR)
-                        val maxMonth = cal.get(Calendar.MONTH)
+                        val maxMonth = cal.get(Calendar.MONTH) + 1
                         val maxDay = cal.get(Calendar.DAY_OF_MONTH)
                         if (maxYear == year && maxMonth == month && maxDay == dayOfMonth) {
                             isMaxDateSame = true
@@ -213,16 +213,16 @@ class AirDateTimePicker {
                     pickTime(activity, selectedDate, minDate, maxDate, isMinDateSame, isMaxDateSame, object: Callback {
                         override fun onSuccess(time2: Long) {
 
-                            val simpleDateFormatHour = SimpleDateFormat("h")
+                            val simpleDateFormatHour = SimpleDateFormat("H")
                             val simpleDateFormatMinute = SimpleDateFormat("m")
                             val hour = simpleDateFormatHour.format(time2).toInt()
                             val min = simpleDateFormatMinute.format(time2).toInt()
 
                             val cal = Calendar.getInstance()
                             cal.set(Calendar.YEAR, year)
-                            cal.set(Calendar.MONTH, month)
+                            cal.set(Calendar.MONTH, month - 1)
                             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                            cal.set(Calendar.HOUR, hour)
+                            cal.set(Calendar.HOUR_OF_DAY, hour)
                             cal.set(Calendar.MINUTE, min)
                             callback.onSuccess(cal.timeInMillis)
                         }
