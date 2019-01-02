@@ -1,25 +1,16 @@
-package mumayank.com.airdatetimepicker
+package mumayank.com.airdatetimepickerlibrary
 
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import mumayank.com.airdialog.AirDialog
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class AirDateTimePicker {
 
-    interface PickDateCallback {
-        fun onSuccess(year: Int, month: Int, dayOfMonth: Int)
-        fun onFailure()
-    }
-
-    interface PickTimeCallback {
-        fun onSuccess(hour: Int, min: Int)
-        fun onFailure()
-    }
-
-    interface PickDateTimeCallback {
+    interface Callback {
         fun onSuccess(time: Long)
         fun onFailure()
     }
@@ -31,7 +22,7 @@ class AirDateTimePicker {
             selectedDate: Long?,
             minDate: Long?,
             maxDate: Long?,
-            pickDateCallback: PickDateCallback
+            callback: Callback
         ){
             try {
                 var selectedYear = 0
@@ -47,7 +38,12 @@ class AirDateTimePicker {
                 }
 
                 val datePickerDialog = DatePickerDialog(activity, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                    pickDateCallback.onSuccess(year, month, dayOfMonth)
+                    val cal = Calendar.getInstance()
+                    cal.timeInMillis = System.currentTimeMillis()
+                    cal.set(Calendar.YEAR, year)
+                    cal.set(Calendar.MONTH, month)
+                    cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    callback.onSuccess(cal.timeInMillis)
                 }, selectedYear, selectedMonth, selectedDay)
 
                 if (minDate != null) {
@@ -57,13 +53,13 @@ class AirDateTimePicker {
                     datePickerDialog.datePicker.maxDate = maxDate
                 }
                 datePickerDialog.setOnCancelListener {
-                    pickDateCallback.onFailure()
+                    callback.onFailure()
                 }
                 datePickerDialog.setCancelable(false)
 
                 datePickerDialog.show()
             } catch (e: Exception) {
-                pickDateCallback.onFailure()
+                callback.onFailure()
             }
         }
 
@@ -74,7 +70,7 @@ class AirDateTimePicker {
             maxTime: Long?,
             isMinDateSame: Boolean = false,
             isMaxDateSame: Boolean = false,
-            pickTimeCallback: PickTimeCallback
+            callback: Callback
         ) {
             try {
                 val timePickerDialog = TimePickerDialog(activity, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
@@ -131,7 +127,11 @@ class AirDateTimePicker {
                     }
 
                     if (incorrectString == "") {
-                        pickTimeCallback.onSuccess(hourOfDay, minute)
+                        val cal = Calendar.getInstance()
+                        cal.timeInMillis = System.currentTimeMillis()
+                        cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                        cal.set(Calendar.MINUTE, minute)
+                        callback.onSuccess(cal.timeInMillis)
                     } else {
                         AirDialog(
                             activity,
@@ -139,10 +139,10 @@ class AirDateTimePicker {
                             incorrectString,
                             isCancelable = false,
                             airButton1 = AirDialog.Button("RETRY") {
-                                pickTime(activity, selectedTime, minTime, maxTime, isMinDateSame, isMaxDateSame, pickTimeCallback)
+                                pickTime(activity, selectedTime, minTime, maxTime, isMinDateSame, isMaxDateSame, callback)
                             },
                             airButton3 = AirDialog.Button("CANCEL") {
-                                pickTimeCallback.onFailure()
+                                callback.onFailure()
                             }
                         )
                     }
@@ -150,7 +150,7 @@ class AirDateTimePicker {
                 }, 0, 0, true)
 
                 timePickerDialog.setOnCancelListener {
-                    pickTimeCallback.onFailure()
+                    callback.onFailure()
                 }
 
                 timePickerDialog.setCancelable(false)
@@ -164,7 +164,7 @@ class AirDateTimePicker {
 
                 timePickerDialog.show()
             } catch (e: Exception) {
-                pickTimeCallback.onFailure()
+                callback.onFailure()
             }
 
 
@@ -175,11 +175,19 @@ class AirDateTimePicker {
             selectedDate: Long?,
             minDate: Long?,
             maxDate: Long?,
-            pickDateTimeCallback: PickDateTimeCallback
+            callback: Callback
         ) {
 
-            pickDate(activity, selectedDate, minDate, maxDate, object: PickDateCallback {
-                override fun onSuccess(year: Int, month: Int, dayOfMonth: Int) {
+            pickDate(activity, selectedDate, minDate, maxDate, object: Callback {
+                override fun onSuccess(time: Long) {
+
+                    val simpleDateFormatYear = SimpleDateFormat("yyyy")
+                    val simpleDateFormatMonth = SimpleDateFormat("M")
+                    val simpleDateFormatDay = SimpleDateFormat("d")
+                    val year = simpleDateFormatYear.format(time).toInt()
+                    val month = simpleDateFormatMonth.format(time).toInt()
+                    val dayOfMonth = simpleDateFormatDay.format(time).toInt()
+
                     var isMinDateSame = false
                     if (minDate != null) {
                         val cal1 = Calendar.getInstance()
@@ -204,19 +212,23 @@ class AirDateTimePicker {
                         }
                     }
 
-                    pickTime(activity, selectedDate, minDate, maxDate, isMinDateSame, isMaxDateSame, object: PickTimeCallback {
-                        override fun onSuccess(hour: Int, min: Int) {
+                    pickTime(activity, selectedDate, minDate, maxDate, isMinDateSame, isMaxDateSame, object: Callback {
+                        override fun onSuccess(time2: Long) {
+
+                            val simpleDateFormatHour = SimpleDateFormat("h")
+                            val simpleDateFormatMinute = SimpleDateFormat("m")
+                            val hour = simpleDateFormatHour.format(time2).toInt()
+                            val min = simpleDateFormatMinute.format(time2).toInt()
+
                             val cal = Calendar.getInstance()
-                            cal.set(Calendar.YEAR, year)
-                            cal.set(Calendar.MONTH, month)
-                            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                            cal.set(Calendar.HOUR_OF_DAY, hour)
+                            cal.timeInMillis = time
+                            cal.set(Calendar.HOUR, hour)
                             cal.set(Calendar.MINUTE, min)
-                            pickDateTimeCallback.onSuccess(cal.timeInMillis)
+                            callback.onSuccess(cal.timeInMillis)
                         }
 
                         override fun onFailure() {
-                            pickDateTimeCallback.onFailure()
+                            callback.onFailure()
                         }
 
                     })
@@ -224,7 +236,7 @@ class AirDateTimePicker {
                 }
 
                 override fun onFailure() {
-                    pickDateTimeCallback.onFailure()
+                    callback.onFailure()
                 }
 
             })
