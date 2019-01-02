@@ -39,7 +39,6 @@ class AirDateTimePicker {
 
                 val datePickerDialog = DatePickerDialog(activity, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
                     val cal = Calendar.getInstance()
-                    cal.timeInMillis = System.currentTimeMillis()
                     cal.set(Calendar.YEAR, year)
                     cal.set(Calendar.MONTH, month)
                     cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -128,7 +127,6 @@ class AirDateTimePicker {
 
                     if (incorrectString == "") {
                         val cal = Calendar.getInstance()
-                        cal.timeInMillis = System.currentTimeMillis()
                         cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
                         cal.set(Calendar.MINUTE, minute)
                         callback.onSuccess(cal.timeInMillis)
@@ -190,11 +188,11 @@ class AirDateTimePicker {
 
                     var isMinDateSame = false
                     if (minDate != null) {
-                        val cal1 = Calendar.getInstance()
-                        cal1.time = Date(minDate)
-                        val minYear = cal1.get(Calendar.YEAR)
-                        val minMonth = cal1.get(Calendar.MONTH)
-                        val minDay = cal1.get(Calendar.DAY_OF_MONTH)
+                        val cal = Calendar.getInstance()
+                        cal.time = Date(minDate)
+                        val minYear = cal.get(Calendar.YEAR)
+                        val minMonth = cal.get(Calendar.MONTH)
+                        val minDay = cal.get(Calendar.DAY_OF_MONTH)
                         if (minYear == year && minMonth == month && minDay == dayOfMonth) {
                             isMinDateSame = true
                         }
@@ -202,11 +200,11 @@ class AirDateTimePicker {
 
                     var isMaxDateSame = false
                     if (maxDate != null) {
-                        val cal1 = Calendar.getInstance()
-                        cal1.time = Date(maxDate)
-                        val maxYear = cal1.get(Calendar.YEAR)
-                        val maxMonth = cal1.get(Calendar.MONTH)
-                        val maxDay = cal1.get(Calendar.DAY_OF_MONTH)
+                        val cal = Calendar.getInstance()
+                        cal.time = Date(maxDate)
+                        val maxYear = cal.get(Calendar.YEAR)
+                        val maxMonth = cal.get(Calendar.MONTH)
+                        val maxDay = cal.get(Calendar.DAY_OF_MONTH)
                         if (maxYear == year && maxMonth == month && maxDay == dayOfMonth) {
                             isMaxDateSame = true
                         }
@@ -221,7 +219,9 @@ class AirDateTimePicker {
                             val min = simpleDateFormatMinute.format(time2).toInt()
 
                             val cal = Calendar.getInstance()
-                            cal.timeInMillis = time
+                            cal.set(Calendar.YEAR, year)
+                            cal.set(Calendar.MONTH, month)
+                            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                             cal.set(Calendar.HOUR, hour)
                             cal.set(Calendar.MINUTE, min)
                             callback.onSuccess(cal.timeInMillis)

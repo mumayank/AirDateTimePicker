@@ -18,16 +18,22 @@ class MainActivity : AppCompatActivity() {
         textViewTime.text = simpleDateFormatTime.format(System.currentTimeMillis())
         textViewTime.tag = System.currentTimeMillis()
         buttonTime.setOnClickListener {
-            AirDateTimePicker.pickTime(this, textViewTime.tag.toString().toLong(), null, System.currentTimeMillis(), false, false, object: AirDateTimePicker.Callback {
-                override fun onSuccess(time: Long) {
-                    textViewTime.tag = time
-                    textViewTime.text = simpleDateFormatTime.format(time)
-                }
+            AirDateTimePicker.pickTime(
+                this,
+                textViewTime.tag.toString().toLong(),
+                null,
+                System.currentTimeMillis(),
+                false,
+                false,
+                object: AirDateTimePicker.Callback {
+                    override fun onSuccess(time: Long) {
+                        textViewTime.tag = time
+                        textViewTime.text = simpleDateFormatTime.format(time)
+                    }
 
-                override fun onFailure() {
-                    // can optionally do something
-                }
-
+                    override fun onFailure() {
+                        // can optionally do something
+                    }
             })
         }
 
