@@ -1,4 +1,4 @@
-![alt text](https://github.com/mumayank/AirDialog/blob/master/image.png "Logo")
+![alt text](https://images.unsplash.com/photo-1533749047139-189de3cf06d3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=676&q=80 "Logo")
 
 # Air Date Time Picker Library 
 
