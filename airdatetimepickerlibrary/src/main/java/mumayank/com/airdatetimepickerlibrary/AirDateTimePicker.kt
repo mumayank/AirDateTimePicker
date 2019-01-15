@@ -18,11 +18,11 @@ class AirDateTimePicker {
     companion object {
 
         fun pickDate(
-            activity: Activity,
+            activity: Activity?,
             selectedDate: Long?,
             minDate: Long?,
             maxDate: Long?,
-            callback: Callback
+            callback: Callback?
         ){
             try {
                 var selectedYear = 0
@@ -42,7 +42,7 @@ class AirDateTimePicker {
                     cal.set(Calendar.YEAR, year)
                     cal.set(Calendar.MONTH, month)
                     cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                    callback.onSuccess(cal.timeInMillis)
+                    callback?.onSuccess(cal.timeInMillis)
                 }, selectedYear, selectedMonth, selectedDay)
 
                 if (minDate != null) {
@@ -52,13 +52,13 @@ class AirDateTimePicker {
                     datePickerDialog.datePicker.maxDate = maxDate
                 }
                 datePickerDialog.setOnCancelListener {
-                    callback.onFailure()
+                    callback?.onFailure()
                 }
                 datePickerDialog.setCancelable(false)
 
                 datePickerDialog.show()
             } catch (e: Exception) {
-                callback.onFailure()
+                callback?.onFailure()
             }
         }
 
