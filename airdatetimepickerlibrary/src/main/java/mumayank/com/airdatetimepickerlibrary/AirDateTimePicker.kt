@@ -134,8 +134,9 @@ class AirDateTimePicker {
                         AirDialog(
                             activity,
                             "Incorrect Time Selected",
+                            false
+                        ).show(
                             incorrectString,
-                            isCancelable = false,
                             airButton1 = AirDialog.Button("RETRY") {
                                 pickTime(activity, selectedTime, minTime, maxTime, isMinDateSame, isMaxDateSame, callback)
                             },

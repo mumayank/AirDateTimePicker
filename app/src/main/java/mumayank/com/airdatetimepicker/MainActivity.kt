@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         textViewDateTime.text = simpleDateFormatDateTime.format(System.currentTimeMillis())
         textViewDateTime.tag = System.currentTimeMillis()
         buttonDateTime.setOnClickListener {
-            AirDateTimePicker.pickDateTime(this, textViewDateTime.tag.toString().toLong(), null, System.currentTimeMillis(), object: AirDateTimePicker.Callback {
+            AirDateTimePicker.pickDateTime(this, textViewDateTime.tag.toString().toLong(), System.currentTimeMillis() - (1000.toLong()*60*60*24*3), System.currentTimeMillis(), object: AirDateTimePicker.Callback {
                 override fun onSuccess(time: Long) {
                     textViewDateTime.tag = time
                     textViewDateTime.text = simpleDateFormatDateTime.format(time)
